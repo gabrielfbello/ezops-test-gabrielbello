@@ -1,0 +1,23 @@
+{
+  "name": "ezops",
+  "version": "1.0.0",
+  "description": "Teste3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrielfbello/ezops-test-gabrielbello.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gabrielfbello/ezops-test-gabrielbello/issues"
+  },
+  "homepage": "https://github.com/gabrielfbello/ezops-test-gabrielbello#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
