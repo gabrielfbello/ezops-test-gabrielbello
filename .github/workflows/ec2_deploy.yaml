@@ -19,12 +19,22 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+
+            # Remove old files and kill old processes
             pm2 delete all 
             kill -9 $(lsof -t -i:3000)
             rm -rf ezops-test-gabrielbello
+
+            # Clone repo
             git clone https://github.com/gabrielfbello/ezops-test-gabrielbello.git
             cd ezops-test-gabrielbello
+
+            # MongoDB Connection
             touch .env
             echo MONGO_URL=${{ secrets.MONGO_URL }} >> .env
+
+            # Install dependencies and build
             npm install
-            pm2 start src/index.js --name ezops-test-gabrielbello
+            npm run build
+
+            pm2 start dist/main.js --name api-server
