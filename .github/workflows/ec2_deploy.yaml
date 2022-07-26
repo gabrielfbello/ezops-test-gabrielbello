@@ -20,10 +20,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
 
-            # Remove old files and kill old processes
-            pm2 delete all 
-            kill -9 $(lsof -t -i:3000)
-            rm -rf ezops-test-gabrielbello
+            # Rename old folder
+            mv ezops-test-gabrielbello ezops-test-gabrielbello-old
 
             # Clone repo
             git clone https://github.com/gabrielfbello/ezops-test-gabrielbello.git
@@ -37,4 +35,10 @@ jobs:
             npm install
             npm run build
 
-            pm2 start dist/main.js --name api-server
+            # Remove old files and kill old processes
+            pm2 delete all 
+            kill -9 $(lsof -t -i:3000)
+            rm -rf ezops-test-gabrielbello-old
+
+            # Start the new server
+            pm2 start dist/main.js
