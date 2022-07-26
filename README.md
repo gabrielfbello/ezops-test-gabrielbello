@@ -1,4 +1,4 @@
-<h1 align="center"> :small_red_triangle: Simple Nest.js CRUD</h1>
+<h1 align="center"> :fire: Nest.js CRUD CI to EC2 </h1>
 
 ## Description
 
