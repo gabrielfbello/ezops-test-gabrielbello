@@ -41,15 +41,14 @@ export class MoviesController {
     description: "Returns a movie by its _id",
   })
   async findOne(@Param("id") id: string, @Res() res) {
-    const movie = await this.moviesService.findOne(id);
-
-    if (movie != null) {
+    try {
+      const movie = await this.moviesService.findOne(id);
       return res.json(movie);
+    } catch (error) {
+      return res
+        .status(HttpStatus.NOT_FOUND)
+        .json({ message: "Movie not found" });
     }
-
-    return res
-      .status(HttpStatus.NOT_FOUND)
-      .json({ message: "Movie not found" });
   }
 
   @Patch(":id")
@@ -62,8 +61,14 @@ export class MoviesController {
     @Body() updateMovieDto: UpdateMovieDto,
     @Res() res,
   ) {
-    await this.moviesService.update(id, updateMovieDto);
-    return res.status(HttpStatus.OK).json({ message: "Movie updated" });
+    try {
+      await this.moviesService.update(id, updateMovieDto);
+      return res.status(HttpStatus.OK).json({ message: "Movie updated" });
+    } catch (error) {
+      return res
+        .status(HttpStatus.NOT_FOUND)
+        .json({ message: "Movie not found" });
+    }
   }
 
   @Delete(":id")
@@ -71,7 +76,13 @@ export class MoviesController {
     description: "Deletes a movie by its _id",
   })
   async remove(@Param("id") id: string, @Res() res) {
-    await this.moviesService.remove(id);
-    return res.status(HttpStatus.OK).json({ message: "Movie deleted" });
+    try {
+      await this.moviesService.remove(id);
+      return res.status(HttpStatus.OK).json({ message: "Movie deleted" });
+    } catch (error) {
+      return res
+        .status(HttpStatus.NOT_FOUND)
+        .json({ message: "Movie not found" });
+    }
   }
 }
