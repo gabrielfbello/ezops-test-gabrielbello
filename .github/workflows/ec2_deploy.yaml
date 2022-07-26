@@ -1,0 +1,28 @@
+name: EC2 Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build Title
+        run: echo '### Server Deploy! :fire:' >> $GITHUB_STEP_SUMMARY
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ec2-54-207-238-175.sa-east-1.compute.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            pm2 delete all 
+            kill -9 $(lsof -t -i:3000)
+            rm -rf ezops-test-gabrielbello
+            git clone https://github.com/gabrielfbello/ezops-test-gabrielbello.git
+            cd ezops-test-gabrielbello
+            npm install
+            pm2 start src/index.js --name ezops-test-gabrielbello
