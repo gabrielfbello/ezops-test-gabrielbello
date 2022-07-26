@@ -13,7 +13,7 @@ import { ConfigModule } from "@nestjs/config";
     TypeOrmModule.forRoot({
       type: "mongodb",
       url: process.env.MONGO_URL,
-      database: process.env.MONGO_DATABASE,
+      database: "movies-catalog",
       entities: [Movies],
       synchronize: true,
     }),
