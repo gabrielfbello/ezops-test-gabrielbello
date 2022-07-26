@@ -25,6 +25,6 @@ jobs:
             git clone https://github.com/gabrielfbello/ezops-test-gabrielbello.git
             cd ezops-test-gabrielbello
             touch .env
-            echo "MONGO_URL="${{ secrets.MONGO_URL }}" >> .env
+            echo MONGO_URL=${{ secrets.MONGO_URL }} >> .env
             npm install
             pm2 start src/index.js --name ezops-test-gabrielbello
