@@ -37,8 +37,8 @@ jobs:
 
             # Remove old files and kill old processes
             pm2 delete all 
-            kill -9 $(lsof -t -i:3000)
             rm -rf ezops-test-gabrielbello-old
+            kill -9 $(lsof -t -i:3000)
 
             # Start the new server
-            pm2 start dist/main.js
+            pm2 start dist/main.js --name server
