@@ -25,6 +25,7 @@ jobs:
 
       - name: Build, tag, and push image to Docker Hub
         env:
+          DOCKER_USER: $DOCKER_USER
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t ezops/$IMAGE_TAG -t ezops/latest .
