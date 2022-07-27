@@ -9,55 +9,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Build Title
+      - name: Workflow
         run: echo '### Server Deploy! :fire:' >> $GITHUB_STEP_SUMMARY
 
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Login to Docker Hub
-        env:
-          DOCKER_USER: $DOCKER_USER
-          DOCKER_PASSWORD: $DOCKER_PASSWORD
-        run: |
-          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-          docker pull $DOCKER_USER/ec2-deploy:latest
+        uses: docker/login-action@v1
+        with:
+          username: b3llo
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build, tag, and push image to Docker Hub
-        env:
-          DOCKER_USER: $DOCKER_USER
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t ezops/$IMAGE_TAG -t ezops/latest .
-          docker push ${{DOCKER_USER}}/ezops
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-      # - name: Deploy to EC2
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ec2-15-228-9-206.sa-east-1.compute.amazonaws.com
-      #     username: ubuntu
-      #     key: ${{ secrets.EC2_SSH_KEY }}
-      #     script: |
+      - name: Build Docker Image and Push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: b3llo/ezops:latest
 
-      #       # Rename old folder
-      #       mv ezops-test-gabrielbello ezops-test-gabrielbello-old
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ec2-15-228-9-206.sa-east-1.compute.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
 
-      #       # Clone repo
-      #       git clone https://github.com/gabrielfbello/ezops-test-gabrielbello.git
-      #       cd ezops-test-gabrielbello
-
-      #       # MongoDB Connection
-      #       touch .env
-      #       echo 'MONGO_URL=${{ secrets.MONGO_URL }}' >> .env
-
-      #       # Install dependencies and build
-      #       npm install --legacy-peer-deps
-      #       npm run build
-
-      #       # Remove old files and kill old processes
-      #       pm2 delete all
-      #       rm -rf ezops-test-gabrielbello-old
-      #       kill -9 $(lsof -t -i:3000)
-
-      #       # Start the new server
-      #       pm2 start dist/main.js --name server
+            sudo netstat -pna | grep 3000
+            docker pull b3llo/ezops:latest
+            docker container run -d --name ezops --restart always -p 3000:3000 b3llo/ezops:latest
