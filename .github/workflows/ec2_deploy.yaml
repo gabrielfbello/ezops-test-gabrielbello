@@ -39,7 +39,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-
-            sudo netstat -pna | grep 3000
             docker pull b3llo/ezops:latest
+            docker stop ezops
+            docker rm ezops
             docker container run -d --name ezops --restart always -p 3000:3000 b3llo/ezops:latest
