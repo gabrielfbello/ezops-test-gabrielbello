@@ -4,6 +4,6 @@ import { Controller, Get } from "@nestjs/common";
 export class AppController {
   @Get()
   root(): string {
-    return "Deployed successfully 🚀";
+    return JSON.stringify(new Date());
   }
 }
